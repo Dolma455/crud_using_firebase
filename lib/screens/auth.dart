@@ -19,6 +19,7 @@ class _AuthScreenState extends State<AuthScreen> {
   var _isLogin = true;
   var _enteredEmail = '';
   var _enteredPassword = '';
+  var _enteredUsername = '';
   File? _selectedImage;
   void _submit() async {
     final isValid = _formkey.currentState!.validate();
@@ -43,7 +44,7 @@ class _AuthScreenState extends State<AuthScreen> {
             .collection('userss')
             .doc(userCredentials.user!.uid)
             .set({
-          'username': '',
+          'username': _enteredUsername,
           'email': _enteredEmail,
           'password': _enteredPassword
         });
@@ -110,6 +111,23 @@ class _AuthScreenState extends State<AuthScreen> {
                                 _enteredEmail = newValue!;
                               },
                             ),
+                            if (!_isLogin)
+                              TextFormField(
+                                decoration: const InputDecoration(
+                                    labelText: 'Username'),
+                                enableSuggestions: false,
+                                validator: (value) {
+                                  if (value == null ||
+                                      value.isEmpty ||
+                                      value.trim().length < 8) {
+                                    return 'Please enter at least 8 characters';
+                                  }
+                                  return null;
+                                },
+                                onSaved: (newValue) {
+                                  _enteredUsername = newValue!;
+                                },
+                              ),
                             TextFormField(
                               decoration: const InputDecoration(
                                 labelText: 'Password',
