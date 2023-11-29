@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crud_firestore/widgets/user_image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -21,11 +22,11 @@ class _AuthScreenState extends State<AuthScreen> {
   File? _selectedImage;
   void _submit() async {
     final isValid = _formkey.currentState!.validate();
-    if (!isValid || !_isLogin && _selectedImage==null) {
+    if (!isValid || !_isLogin && _selectedImage == null) {
       // show error messgae
       return;
     }
-    
+
     _formkey.currentState!.save();
 
     try {
@@ -37,6 +38,15 @@ class _AuthScreenState extends State<AuthScreen> {
         final userCredentials = await _firebase.createUserWithEmailAndPassword(
             email: _enteredEmail, password: _enteredPassword);
         print(userCredentials);
+
+        FirebaseFirestore.instance
+            .collection('userss')
+            .doc(userCredentials.user!.uid)
+            .set({
+          'username': '',
+          'email': _enteredEmail,
+          'password': _enteredPassword
+        });
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {}
@@ -75,9 +85,12 @@ class _AuthScreenState extends State<AuthScreen> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            if (!_isLogin) UserImagePicker(onPickImage: (pickedImage) {
-                              _selectedImage=pickedImage;
-                            },),
+                            if (!_isLogin)
+                              UserImagePicker(
+                                onPickImage: (pickedImage) {
+                                  _selectedImage = pickedImage;
+                                },
+                              ),
                             TextFormField(
                               decoration: const InputDecoration(
                                 labelText: 'Email Address',
