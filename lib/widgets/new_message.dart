@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class NewMessage extends StatefulWidget {
@@ -16,13 +18,29 @@ class _NewMessageState extends State<NewMessage> {
     super.dispose();
   }
 
-  void _submitMessage() {
+  void _submitMessage() async {
     final enteredMessage = _messageController.text;
-    if (enteredMessage.isEmpty) {
+    if (enteredMessage.trim().isEmpty) {
       return;
     }
-    //Send msg to firebase
+    //for hiding keyboard in mobile onclick send button
+    // FocusScope.of(context).unfocus();
     _messageController.clear();
+    //Send msg to firebase
+    final user = FirebaseAuth.instance.currentUser!;
+    print(user);
+    //get data from firestore
+    final userData = await FirebaseFirestore.instance
+        .collection('userss')
+        .doc(user.uid)
+        .get();
+
+    FirebaseFirestore.instance.collection('chat').add({
+      'text': enteredMessage,
+      'createdAt': Timestamp.now(),
+      'userId': user.uid,
+      'username': userData.data()!['username'],
+    });
   }
 
   @override
@@ -31,18 +49,17 @@ class _NewMessageState extends State<NewMessage> {
       padding: const EdgeInsets.only(left: 15, right: 1, bottom: 14),
       child: Row(
         children: [
-          const Expanded(
+          Expanded(
               child: TextField(
+            controller: _messageController,
             textCapitalization: TextCapitalization.sentences,
             autocorrect: true,
             enableSuggestions: true,
-            decoration: InputDecoration(labelText: 'Send a message...'),
+            decoration: const InputDecoration(labelText: 'Send a message...'),
           )),
           IconButton(
               color: Theme.of(context).colorScheme.primary,
-              onPressed: () {
-                _submitMessage();
-              },
+              onPressed: _submitMessage,
               icon: const Icon(Icons.send))
         ],
       ),
