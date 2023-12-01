@@ -27,9 +27,16 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
+  void showFlutterNotification(RemoteMessage message) {
+    RemoteNotification? notification = message.notification;
+    AndroidNotification? android = message.notification?.android;
+    print('NOTIFICATION TITLE${notification!.title}');
+  }
+
   @override
   void initState() {
     setupPushNotification();
+    FirebaseMessaging.onMessage.listen((showFlutterNotification));
     super.initState();
   }
 
