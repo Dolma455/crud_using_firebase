@@ -1,8 +1,10 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crud_firestore/widgets/user_image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 final _firebase = FirebaseAuth.instance;
@@ -15,6 +17,22 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
+  getFCM() async {
+    try {
+      final fcmToken = await FirebaseMessaging.instance.getToken(
+          vapidKey:
+              "BHu8f1_GJtXqLxVYn_HT1eq8G_EuM6VYcmYgAbPvn-eHpOzNwLC10_fFM1Lgh44KtjAAmwxYuA2uz30rKT2AwQY");
+      log("FCM is $fcmToken");
+    } on FirebaseException catch (e) {
+      log("ERROR is ${e.message}");
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   final _formkey = GlobalKey<FormState>();
   var _isLogin = true;
   var _enteredEmail = '';
@@ -61,6 +79,10 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: getFCM,
+        label: const Text("Get FCM"),
+      ),
       body: Center(
         child: SingleChildScrollView(
           child: Column(

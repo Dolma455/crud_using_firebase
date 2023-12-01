@@ -21,14 +21,17 @@ class DefaultFirebaseOptions {
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
+        return android;
+      case TargetPlatform.iOS:
         throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for android - '
+          'DefaultFirebaseOptions have not been configured for ios - '
           'you can reconfigure this by running the FlutterFire CLI again.',
         );
-      case TargetPlatform.iOS:
-        return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -57,25 +60,12 @@ class DefaultFirebaseOptions {
     measurementId: 'G-2WNH4Q5C97',
   );
 
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyB-Vd56LKIM8ONOj4Bu7QoHXO-cp6gZYTk',
-    appId: '1:225378996225:ios:a89d07faf252b7b6953000',
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'AIzaSyA7o3_AxEI9O9h05DQwf0K_Z3WaLJ5R4P8',
+    appId: '1:225378996225:android:bcb9917d49e0369c953000',
     messagingSenderId: '225378996225',
     projectId: 'flutterweb-968c2',
     databaseURL: 'https://flutterweb-968c2-default-rtdb.firebaseio.com',
     storageBucket: 'flutterweb-968c2.appspot.com',
-    iosClientId: '225378996225-hr85c5n9nrc5j881jbid9beaf1uuknm6.apps.googleusercontent.com',
-    iosBundleId: 'com.example.crudFirestore',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyB-Vd56LKIM8ONOj4Bu7QoHXO-cp6gZYTk',
-    appId: '1:225378996225:ios:1e000bd9f1a52e75953000',
-    messagingSenderId: '225378996225',
-    projectId: 'flutterweb-968c2',
-    databaseURL: 'https://flutterweb-968c2-default-rtdb.firebaseio.com',
-    storageBucket: 'flutterweb-968c2.appspot.com',
-    iosClientId: '225378996225-t9kgkp114ds1cjfvd0pn9tdp5a3el4lo.apps.googleusercontent.com',
-    iosBundleId: 'com.example.crudFirestore.RunnerTests',
   );
 }

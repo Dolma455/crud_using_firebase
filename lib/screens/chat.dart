@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:crud_firestore/widgets/chat_messages.dart';
 import 'package:crud_firestore/widgets/new_message.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,27 +14,23 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  // void setupPushNotification() async {
-  //   final fcm = FirebaseMessaging.instance;
-  //   await fcm.requestPermission();
-  //   final token=await fcm.getToken();
-  //   print(token); //you could send this token via (HTTP or firestore)
-  // }
   void setupPushNotification() async {
-    final fcmToken = await FirebaseMessaging.instance.getToken(
-        vapidKey:
-            "BBbY-Vz4Gq-6QyN_qOB-hIb7dy15E961RYOkn0gHkhjN65rwmgErJkRxrM-wEDTHqFdfJ3DsPYVR9PoJkmhUIKQ");
-    FirebaseMessaging.instance.onTokenRefresh
-        .listen((fcmToken) {})
-        .onError((err) {
-      print("Cannot generate token");
-    });
+    try {
+      final fcmToken = await FirebaseMessaging.instance.getToken(
+          vapidKey:
+              "BBbY-Vz4Gq-6QyN_qOB-hIb7dy15E961RYOkn0gHkhjN65rwmgErJkRxrM-wEDTHqFdfJ3DsPYVR9PoJkmhUIKQ");
+
+      log("FCM Token: $fcmToken");
+      FirebaseMessaging.instance.subscribeToTopic('chat');
+    } catch (e) {
+      log("Failed to get FCM token: $e");
+    }
   }
 
   @override
   void initState() {
-    super.initState();
     setupPushNotification();
+    super.initState();
   }
 
   @override
